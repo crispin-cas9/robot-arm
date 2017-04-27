@@ -28,11 +28,11 @@ void loop()
  
   switch (sendByte){
  
-    case 'f':  //if the controller type f
+    case 'f':  //if controller types f
   {
     
     char msg2[] = "f";
-    digitalWrite(13, true); // Flash a light to show transmitting
+    digitalWrite(13, HIGH); // Flash a light to show transmitting
     vw_send((uint8_t *)msg2, strlen(msg2));//send byte to the receiver
     vw_wait_tx(); // Wait until the whole message is gone
     digitalWrite(13, false);
@@ -42,41 +42,13 @@ void loop()
     case 'b':  //if controller types b
     {
    char msg2[] = "b";
-   digitalWrite(13, true); // Flash a light to show transmitting
+   digitalWrite(13, HIGH); // Flash a light to show transmitting
    vw_send((uint8_t *)msg2, strlen(msg2));//send byte to the receiver
    vw_wait_tx(); // Wait until the whole message is gone
    digitalWrite(13, false);  
    break;
     }
-    
-    case 's': //if controller types s
-    {
-   char msg2[] = "s";
-   digitalWrite(13, true); // Flash a light to show transmitting
-   vw_send((uint8_t *)msg2, strlen(msg2));//send byte to the receiver
-   vw_wait_tx(); // Wait until the whole message is gone
-   digitalWrite(13, false);  
-   break;
-    }
-    
-    case 'l': //if controller types l
-  {  
-   char msg2[] = "l";
-   digitalWrite(13, true); // Flash a light to show transmitting
-   vw_send((uint8_t *)msg2, strlen(msg2));//send byte to the receiver
-   vw_wait_tx(); // Wait until the whole message is gone
-   digitalWrite(13, false);    
-   break;
-  }     
-    case 'r': //if controller types r
-    {
-   char msg2[] = "r";
-   digitalWrite(13, true); // Flash a light to show transmitting
-   vw_send((uint8_t *)msg2, strlen(msg2));//send byte to the receiver
-   vw_wait_tx(); // Wait until the whole message is gone
-   digitalWrite(13, false);   
-   break;
-    }
+
     default://if any other value is entered
     {
       

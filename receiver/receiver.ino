@@ -2,56 +2,50 @@
 // (this code is not mine)
 // source: http://www.instructables.com/id/Wirelessly-Control-A-Robot-Using-Arduino-and-RF-Mo/?ALLSTEPS
 
+  #include <Servo.h>
   #include <VirtualWire.h>
+
+// here are the servos
+Servo bigservo1;
+Servo bigservo2;
+Servo smallservos;
+Servo clawmotor;
+Servo vexes;
 
 // motor pins!
 
-//declaring pin Nos of FIRST L293D
-int en1 = 5;
- int en2 = 6;
- int in1 = 7;
- int in2 = 8;
- int in3 = 9;
- int in4 = 10;
- //declaring pin nos of SECOND L293D
- int en1o2 = 3;
- int en2o2 = 11;
- int in1o2 = 4;
- int in2o2 = 12;
- int in3o2 = 14;
- int in4o2 = 15;
- int motorPin[] = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15};//array for storing pin nos
+int potpin1 = A0;
+int potpin2 = A1;
+int cbpin = 2;
+int vbpinfw = 4;
+int vbpinbw = 5;
+int val1;
+int val2;
+int val3;
+int cbstate = 0;
+int vbstatef = 0;
+int vbstateb = 0;
+int x = 0;
 
-void setup()
-{
-    Serial.begin(9600);  // Debugging only
-    Serial.println("setup");
-    // Initialise the IO and ISR
-    vw_setup(2000);  // Bits per sec
-    vw_set_rx_pin(2);//Receiver at Digital Pin 2
-    vw_rx_start();// Start the receiver PLL running
+void setup() {
+  Serial.begin(9600);  // Debugging only
+  Serial.println("setup");
+  // Initialise the IO and ISR
+  vw_setup(2000);  // Bits per sec
+  vw_set_rx_pin(11);//Receiver at Digital Pin 11
+  vw_rx_start();// Start the receiver PLL running
 
-    
- for (int i = 0; i < 12; i++) 
- {
-        pinMode(motorPin[i], OUTPUT);
- }//close for loop
+  bigservo1.attach(9);
+  bigservo2.attach(7);
+  smallservos.attach(10);
+  clawmotor.attach(3);
+  vexes.attach(8);
 
-/*
-This is basically what the for loop does :-
-pinMode(en1, OUTPUT);
-pinMode(en2, OUTPUT);
-pinMode(in1, OUTPUT);
-pinMode(in2, OUTPUT);
-pinMode(in3, OUTPUT);
-pinMode(in4, OUTPUT);
-pinMode(en1o2, OUTPUT);
-pinMode(en2o2, OUTPUT);
-pinMode(in1o2, OUTPUT);
-pinMode(in2o2, OUTPUT);
-pinMode(in3o2, OUTPUT);
-pinMode(in4o2, OUTPUT);
-*/
+  // button pins are inputs
+  pinMode(cbpin, INPUT);
+  pinMode(vbpinfw, INPUT);
+  pinMode(vbpinbw, INPUT);
+
 
 }//close setup
 
@@ -75,24 +69,35 @@ void loop()
       Serial.print(buf[i]);
         if(buf[i] == 'f')
         {
-          forward();//go forward when f is pressed
+          //forward(); go forward when f is pressed
         }
+        
         if(buf[i] == 'b')
       {
-        backward();//go backward when b is pressed
+        //backward();//go backward when b is pressed
       }
-        if(buf[i] == 's')
+      
+        if(buf[i] == 'c')
       {
-        stopMotor();//stop/brake when s is pressed
+        cbstate = HIGH;
       }
-        if(buf[i] == 'l')
+
+        if(buf[i] == 'x')
       {
-        left();//go left when l is presed
+        cbstate = LOW;
       }
-        if(buf[i] == 'r')
-        {
-          right();//go right when r is pressed
-        }
+
+      if (cbstate == HIGH) {
+        clawmotor.write(170);
+        x = 0;
+      } if (cbstate == LOW) {
+          if (x == 0) {
+            clawmotor.write(50);
+            delay(500);
+            x = 1;
+          } else {
+            clawmotor.write(90);
+          }}
       
   }//close for loop
   
@@ -104,90 +109,17 @@ void loop()
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// replace these with motor variables
+// shoulder = bigs, elbow = vexes, wrist = smalls, claw = claw vex
 
 //set of functions
-void forward()
-{
-  digitalWrite(en1,HIGH);
-  digitalWrite(en2,HIGH);
-  digitalWrite(en1o2,HIGH);
-  digitalWrite(en2o2,HIGH);
-  digitalWrite(in1,HIGH);
-  digitalWrite(in1o2,HIGH);
-  digitalWrite(in2,LOW);
-  digitalWrite(in2o2,LOW);
-  digitalWrite(in3,LOW);
-  digitalWrite(in3o2,LOW);
-  digitalWrite(in4,HIGH);
-  digitalWrite(in4o2,HIGH);
-  }
-  
-  
-void backward()
-{
-  digitalWrite(en1,HIGH);
-  digitalWrite(en2,HIGH);
-  digitalWrite(en1o2,HIGH);
-  digitalWrite(en2o2,HIGH);
-  digitalWrite(in1,LOW);
-  digitalWrite(in1o2,LOW);
-  digitalWrite(in2,HIGH);
-  digitalWrite(in2o2,HIGH);
-  digitalWrite(in3,HIGH);
-  digitalWrite(in3o2,HIGH);
-  digitalWrite(in4,LOW);
-  digitalWrite(in4o2,LOW);
-  
-}
+//
+//void shoulder()
+//{
+//  digitalWrite(bigservo1,LOW);
+//  digitalWrite(bigservo2,LOW);
+//  digitalWrite(spallservos,LOW);
+//  digitalWrite(clawmotor,LOW);
+//  digitalWrite(vexes,LOW);
+//  }
 
-void left()
-{
-  digitalWrite(en1,HIGH);
-  digitalWrite(en2,HIGH);
-  digitalWrite(en1o2,HIGH);
-  digitalWrite(en2o2,HIGH);
-  digitalWrite(in1,LOW);
-  digitalWrite(in1o2,LOW);
-  digitalWrite(in2,LOW);
-  digitalWrite(in2o2,LOW);
-  digitalWrite(in3,LOW);
-  digitalWrite(in3o2,LOW);
-  digitalWrite(in4,HIGH);
-  digitalWrite(in4o2,HIGH);
-  
-}
-
-void right()
-{
-  digitalWrite(en1,HIGH);
-  digitalWrite(en2,HIGH);
-  digitalWrite(en1o2,HIGH);
-  digitalWrite(en2o2,HIGH);
-  digitalWrite(in1,HIGH);
-  digitalWrite(in1o2,HIGH);
-  digitalWrite(in2,LOW);
-  digitalWrite(in2o2,LOW);
-  digitalWrite(in3,LOW);
-  digitalWrite(in3o2,LOW);
-  digitalWrite(in4,LOW);
-  digitalWrite(in4o2,LOW);
-  
-}
-
-void stopMotor()
-{
-  digitalWrite(en1,HIGH);
-  digitalWrite(en2,HIGH);
-  digitalWrite(en1o2,HIGH);
-  digitalWrite(en2o2,HIGH);
-  digitalWrite(in1,LOW);
-  digitalWrite(in1o2,LOW);
-  digitalWrite(in2,LOW);
-  digitalWrite(in2o2,LOW);
-  digitalWrite(in3,LOW);
-  digitalWrite(in3o2,LOW);
-  digitalWrite(in4,LOW);
-  digitalWrite(in4o2,LOW);
-}
   //End Of Code
