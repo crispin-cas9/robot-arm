@@ -28,10 +28,10 @@ void loop()
  
   switch (sendByte){
  
-    case 'f':  //if controller types f
+    case 'c':  //if controller types f
   {
     
-    char msg2[] = "f";
+    char msg2[] = "c";
     digitalWrite(13, HIGH); // Flash a light to show transmitting
     vw_send((uint8_t *)msg2, strlen(msg2));//send byte to the receiver
     vw_wait_tx(); // Wait until the whole message is gone
@@ -39,9 +39,9 @@ void loop()
     break;
      
   }
-    case 'b':  //if controller types b
+    case 'x':  //if controller types b
     {
-   char msg2[] = "b";
+   char msg2[] = "x";
    digitalWrite(13, HIGH); // Flash a light to show transmitting
    vw_send((uint8_t *)msg2, strlen(msg2));//send byte to the receiver
    vw_wait_tx(); // Wait until the whole message is gone

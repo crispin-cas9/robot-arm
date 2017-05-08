@@ -2,15 +2,15 @@
 // (this code is not mine)
 // source: http://www.instructables.com/id/Wirelessly-Control-A-Robot-Using-Arduino-and-RF-Mo/?ALLSTEPS
 
-  #include <Servo.h>
+  #include <ServoTimer2.h>
   #include <VirtualWire.h>
 
 // here are the servos
-Servo bigservo1;
-Servo bigservo2;
-Servo smallservos;
-Servo clawmotor;
-Servo vexes;
+ServoTimer2 bigservo1;
+ServoTimer2 bigservo2;
+ServoTimer2 smallservos;
+ServoTimer2 clawmotor;
+ServoTimer2 vexes;
 
 // motor pins!
 
@@ -64,47 +64,46 @@ void loop()
         digitalWrite(13, true); // Flash a light to show received good message
   // Message with a good checksum received, dump it.
   
-  for (i = 0; i < buflen; i++)
-  {
+  for (i = 0; i < buflen; i++) {
       Serial.print(buf[i]);
-        if(buf[i] == 'f')
-        {
-          //forward(); go forward when f is pressed
+
+//        if(buf[i] == 'f')
+//        {
+//          forward(); go forward when f is pressed
+//        }
+//        
+//        if(buf[i] == 'b')
+//      {
+//        backward();//go backward when b is pressed
+//      }
+      
+        if(buf[i] == 'c') {
+          cbstate = HIGH;
         }
-        
-        if(buf[i] == 'b')
-      {
-        //backward();//go backward when b is pressed
-      }
-      
-        if(buf[i] == 'c')
-      {
-        cbstate = HIGH;
-      }
 
-        if(buf[i] == 'x')
-      {
-        cbstate = LOW;
-      }
+        if(buf[i] == 'x') {
+          cbstate = LOW;
+        }
 
-      if (cbstate == HIGH) {
-        clawmotor.write(170);
-        x = 0;
-      } if (cbstate == LOW) {
-          if (x == 0) {
-            clawmotor.write(50);
-            delay(500);
-            x = 1;
-          } else {
-            clawmotor.write(90);
-          }}
+        if (cbstate == HIGH) {
+          clawmotor.write(170);
+          x = 0;
+        } if (cbstate == LOW) {
+            if (x == 0) {
+              clawmotor.write(50);
+              delay(500);
+              x = 1;
+            } else {
+              clawmotor.write(90);
+            }}
       
-  }//close for loop
+  }
   
         digitalWrite(13, false);
 
-   }//close main if
-}//close loop
+   }
+}
+
 //you can print the data entered when debugging by adding Serial.println
 
 ////////////////////////////////////////////////////////////////////////////////////////
